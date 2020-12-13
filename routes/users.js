@@ -10,7 +10,15 @@ UserRouter.use(bodyParser.json());
 
 /* GET users listing. */
 
-UserRouter.get('/login', authenticate.verifyUser, function(req, res, next) {
+UserRouter.get('/', authenticate.verifyUser, authenticate.verifyAdmin, async (req, res, next) => {
+  const students = await User.find({role: 'student'});
+  const teachers = await User.find({role: 'teacher'});
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'application/json');
+  res.json({success: true, students, teachers});
+})
+
+UserRouter.get('/login', function(req, res, next) {
   if (!req.body.username) {
 		res.send("Body doesn't contain username!");
 	}
@@ -57,7 +65,7 @@ UserRouter.post('/signup',  authenticate.verifyUser, authenticate.verifyAdmin, (
           res.json({ err: err, success: false });
         }
         else {
-          user.save(async (err, user) => {
+          user.save((err, user) => {
             if (err) {
               res.statusCode = 200;
               res.setHeader('Content-Type', 'application/json');
@@ -65,10 +73,10 @@ UserRouter.post('/signup',  authenticate.verifyUser, authenticate.verifyAdmin, (
               return;
             }
             passport.authenticate('local')(req, res, () => {
-              var token = authenticate.getToken({ _id: user._id });
+              // var token = authenticate.getToken({ _id: user._id });
               res.statusCode = 200;
               res.setHeader('Content-Type', 'application/json');
-              res.json({ success: true, status: 'Registration Successful', token, user: user});
+              res.json({ success: true, status: 'Registration Successful'});
             })
           })
         }

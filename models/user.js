@@ -22,8 +22,11 @@ var UserSchema = Schema({
     },
     batch: {
         type: String,
-        required: true
     },
+    admin: {
+        type: Boolean,
+        default: false
+    }
 }, {
     timestamps: true
 });

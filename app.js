@@ -7,11 +7,14 @@ var passport = require('passport');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var coursesRouter = require('./routes/course');
+var quizRouter = require('./routes/quiz');
 
 const config = require('./config');
 
 // connecting with database //
 const mongoose = require('mongoose');
+const courseRouter = require('./routes/course');
 const url = config.mongoUrl;
 const connect = mongoose.connect(url, { useUnifiedTopology: true, useNewUrlParser: true, useFindAndModify: false });
 
@@ -37,6 +40,8 @@ app.use(passport.initialize());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/courses', coursesRouter);
+app.use('/quiz', quizRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
