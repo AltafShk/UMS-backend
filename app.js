@@ -38,10 +38,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/courses', coursesRouter);
-app.use('/quizzes', quizRouter);
+app.use('/api/', indexRouter);
+app.use('/api/users', usersRouter);
+app.use('/api/courses', coursesRouter);
+app.use('/api/quizzes', quizRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

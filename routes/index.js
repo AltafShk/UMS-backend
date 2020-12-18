@@ -9,7 +9,7 @@ const Course = require('../models/course');
 
 router.use(bodyParser.json());
 
-router.get('/', async function(req, res, next) {
+router.get('/init', async function(req, res, next) {
   const users = [
     {username: "altaf0", firstname: "altaf", lastname: "sheikh", role: "student", batch: "2022", password: "abcd"},
     {username: "arham0", firstname: "arham", lastname: "ahmed", role: "student", batch: "2022", password: "abcd"},
@@ -82,14 +82,17 @@ router.get('/addcourses', async function(req, res, next) {
                   res.json({success: false, err: `Course with name ${c.course_name} exists.`});
               }
               else{
-                  var crse = await Course.create({course_name: req.body.course_name, teacher: teacher._id});
+                var lst = [];
+                
+                  var crse = await Course.create({course_name: c.course_name, teacher: teacher._id});
                   c.students.forEach(async s => {
                     var std = await User.findOne({"username": s});
-                    crse.students = crse.students.concat([std._id]);
-                    var a = await crse.save();
+                    lst.push(std._id);
                   })
               }
           }
+          crse.students = lst;
+          var a = await crse.save();
       })
       res.statusCode = 200;
       res.setHeader('Content-Type', 'application/json');

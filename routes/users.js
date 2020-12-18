@@ -6,7 +6,7 @@ const authenticate = require('../authenticate');
 var User = require('../models/user');
 var passport = require('passport');
 
-UserRouter.use(bodyParser.json());
+// UserRouter.use(bodyParser.json());
 
 /* GET users listing. */
 
@@ -19,6 +19,7 @@ UserRouter.get('/', authenticate.verifyUser, authenticate.verifyAdmin, async (re
 })
 
 UserRouter.post('/login', function(req, res, next) { //{ username, pwd }
+  console.log(req.body)
   if (!req.body.username) {
 		res.send("Body doesn't contain username!");
 	}
@@ -26,10 +27,17 @@ UserRouter.post('/login', function(req, res, next) { //{ username, pwd }
 		res.send("Body doesn't contain password!");
   }
   passport.authenticate('local', (err, user, info) => {
-		if (err)
-			return next(err);
+		if (err){
+      console.log('njdfjdfdfk');
 
-		if (!user) {
+			res.statusCode = 401;
+			res.setHeader('Content-Type', 'application/json');
+			res.json({success: false, status: 'Login Failed', err: info});
+    }
+
+		else if (!user) {
+      console.log('njdfjdfdfk');
+
 			res.statusCode = 401;
 			res.setHeader('Content-Type', 'application/json');
 			res.json({success: false, status: 'Login Failed', err: info});		
@@ -40,12 +48,14 @@ UserRouter.post('/login', function(req, res, next) { //{ username, pwd }
 				res.setHeader('Content-Type', 'application/json');
 				res.json({success: false, status: 'Login Failed', err: 'Could not log in user!'});
 			}
-			
-			var token = authenticate.getToken({_id: req.user._id});
+			else{
+        var token = authenticate.getToken({_id: req.user._id});
 
-			res.statusCode = 200;
-			res.setHeader('Content-Type', 'application/json');
-			res.json({success: true, token: token, user: user, status: 'Login Successful!'});
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({success: true, token: token, user: user, status: 'Login Successful!'});
+      }
+			
 	});
 	})(req, res, next);
 });
