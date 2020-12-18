@@ -21,6 +21,10 @@ var QuizSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
+    available: {
+        type: Boolean,
+        default: true
+    }
 
 }, {
     timestamps: true

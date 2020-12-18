@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-var QuizSchema = new Schema({
+var SubmissionSchema = new Schema({
     obtained_marks: {
         type: Number,
     },
@@ -15,9 +15,13 @@ var QuizSchema = new Schema({
     quiz: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Quiz'
+    },
+    course: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Quiz'
     }
 }, {
     timestamps: true
 });
 
-module.exports = mongoose.model('Quiz', QuizSchema);
+module.exports = mongoose.model('Submission', SubmissionSchema);

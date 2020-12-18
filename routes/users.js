@@ -18,7 +18,7 @@ UserRouter.get('/', authenticate.verifyUser, authenticate.verifyAdmin, async (re
   res.json({success: true, students, teachers});
 })
 
-UserRouter.get('/login', function(req, res, next) {
+UserRouter.post('/login', function(req, res, next) { //{ username, pwd }
   if (!req.body.username) {
 		res.send("Body doesn't contain username!");
 	}
@@ -45,12 +45,12 @@ UserRouter.get('/login', function(req, res, next) {
 
 			res.statusCode = 200;
 			res.setHeader('Content-Type', 'application/json');
-			res.json({success: true, token: token, status: 'Login Successful!'});
+			res.json({success: true, token: token, user: user, status: 'Login Successful!'});
 	});
 	})(req, res, next);
 });
 
-UserRouter.post('/signup',  authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+UserRouter.post('/signup', (req, res, next) => {
     User.register(new User({
       username: req.body.username,
       firstname: req.body.firstname,
