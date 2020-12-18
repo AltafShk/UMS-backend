@@ -56,8 +56,8 @@ router.route('/')
     })
 });
 
-router.route('/')
-.put('/setgrade', authenticate.verifyUser, async (req, res, next) => {
+router.route('/setgrade')
+.put(authenticate.verifyUser, async (req, res, next) => {
     if (req.user.role === "teacher"){
         if (!req.body.obtained_marks){
             res.statusCode = 400;

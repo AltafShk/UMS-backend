@@ -9,6 +9,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var coursesRouter = require('./routes/course');
 var quizRouter = require('./routes/quiz');
+var submitRouter = require('./routes/submit');
 
 const config = require('./config');
 
@@ -42,6 +43,7 @@ app.use('/api/', indexRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/courses', coursesRouter);
 app.use('/api/quizzes', quizRouter);
+app.use('/api/grades', submitRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

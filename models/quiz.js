@@ -7,7 +7,7 @@ var QuizSchema = new Schema({
         required: true
     },
     total_marks: {
-        type: Number,
+        type: String,
         required: true
     },
     details: {

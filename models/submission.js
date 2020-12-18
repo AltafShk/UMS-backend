@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 var SubmissionSchema = new Schema({
     obtained_marks: {
-        type: Number,
+        type: String,
     },
     submitted_file: {
         type: String,
