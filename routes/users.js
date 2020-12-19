@@ -18,6 +18,12 @@ UserRouter.get('/', async (req, res, next) => {
   res.json({success: true, students, teachers});
 })
 
+UserRouter.get('/autheduser', authenticate.verifyUser, (req, res, next) => {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'application/json');
+  res.json({success: true, user: req.user});
+})
+
 UserRouter.post('/login', function(req, res, next) { //{ username, pwd }
   console.log(req.body)
   if (!req.body.username) {
@@ -28,8 +34,6 @@ UserRouter.post('/login', function(req, res, next) { //{ username, pwd }
   }
   passport.authenticate('local', (err, user, info) => {
 		if (err){
-      console.log('njdfjdfdfk');
-
 			res.statusCode = 401;
 			res.setHeader('Content-Type', 'application/json');
 			res.json({success: false, status: 'Login Failed', err: info});
@@ -41,22 +45,24 @@ UserRouter.post('/login', function(req, res, next) { //{ username, pwd }
 			res.statusCode = 401;
 			res.setHeader('Content-Type', 'application/json');
 			res.json({success: false, status: 'Login Failed', err: info});		
-		}
-		req.logIn(user, (err) => {
-			if (err) {
-				res.statusCode = 401;
-				res.setHeader('Content-Type', 'application/json');
-				res.json({success: false, status: 'Login Failed', err: 'Could not log in user!'});
-			}
-			else{
-        var token = authenticate.getToken({_id: req.user._id});
-
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.json({success: true, token: token, user: user, status: 'Login Successful!'});
-      }
-			
-	});
+    }
+    else{
+      req.logIn(user, (err) => {
+        if (err) {
+          res.statusCode = 401;
+          res.setHeader('Content-Type', 'application/json');
+          res.json({success: false, status: 'Login Failed', err: 'Could not log in user!'});
+        }
+        else{
+          var token = authenticate.getToken({_id: req.user._id});
+  
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json({success: true, token: token, user: user, status: 'Login Successful!'});
+        }
+        
+      }); 
+    }
 	})(req, res, next);
 });
 
