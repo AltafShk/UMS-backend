@@ -63,6 +63,7 @@ router.get('/init', async function(req, res, next) {
     res.json({success: true, status: "Created!"});
   }
 });
+
 router.post('/addcourses', async function(req, res, next) {
 
   const courses = [
@@ -70,40 +71,57 @@ router.post('/addcourses', async function(req, res, next) {
     {"course_name": "linear", "teacher_name": "niha0", "students": ["faizan0", "jazib0"]},
     {"course_name": "calc", "teacher_name": "shah0", "students": ["alam0", "ammar0"]}
   ];
-  console.log("here");
-  const coursess = await Course.find({});
-  console.log("here", coursess); 
-  if (coursess.length > 0){
-    console.log("here", coursess);
-    courses.forEach(async c => {
-      console.log("here");
-      var teacher = await User.findOne({username: c.teacher_name, role: 'teacher'});
-          if (teacher){
-              const crs = await Course.findOne({course_name: c.course_name});
-              if (crs){
-                  res.statusCode = 400;
-                  res.setHeader('Content-Type', 'application/json');
-                  res.json({success: false, err: `Course with name ${c.course_name} exists.`});
-              }
-              else{
-                var lst = [];
-                
-                  var crse = await Course.create({course_name: c.course_name, teacher: teacher._id});
-                  c.students.forEach(async s => {
-                    var std = await User.findOne({"username": s});
-                    lst.push(std._id);
-                  })
-              }
-          }
-          crse.students = lst;
-          var a = await crse.save();
-    })
-
+  const coursess = await Course.count({});
+  courses.forEach(async c => {
+    console.log("here");
+    var teacher = await User.findOne({username: c.teacher_name, role: 'teacher'});
+        if (teacher){
+            const crs = await Course.findOne({course_name: c.course_name});
+            if (crs){
+                res.statusCode = 400;
+                res.setHeader('Content-Type', 'application/json');
+                res.json({success: false, err: `Course with name ${c.course_name} exists.`});
+            }
+            else{
+                var crse = await Course.create({course_name: c.course_name, teacher: teacher._id});
+            }
+        }
+  })
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/json');
     res.json({success: true, status: "Created!"});
-    
-  }
 });
+
+router.post('/addstudents', async function(req, res, next) {
+
+  const courses = [
+    {"course_name": "webdev", "teacher_name": "sarfaraz0", "students": ["altaf0", "arham0"]},
+    {"course_name": "linear", "teacher_name": "niha0", "students": ["faizan0", "jazib0"]},
+    {"course_name": "calc", "teacher_name": "shah0", "students": ["alam0", "ammar0"]}
+  ];
+  courses.forEach(async course => {
+    console.log(course.course_name);
+    const course_obj = await Course.findOne({"course_name": course.course_name});
+    console.log(course_obj);
+    course.students.forEach(async student => {
+      console.log(student);
+      var abcd = await User.findOne({"username": student});
+      console.log(abcd);
+      course_obj.students = course_obj.students.concat([abcd._id]);
+      console.log(student, course_obj);
+    })
+    console.log(course_obj);
+    course_obj.save(err, crs => {
+      console.log(crs, err);
+    })
+  })
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'application/json');
+    res.json({success: true, status: "Created!"});
+});
+
+
+
+
 
 module.exports = router;

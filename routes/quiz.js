@@ -46,7 +46,7 @@ router.post('/addquiz', authenticate.verifyUser, authenticate.verifyTeacher, asy
 
 router.get('/', authenticate.verifyUser, async (req, res, next) => {
     if (req.user.role === "teacher"){
-        var quizzes = Quiz.find({teacher: req.user._id}).populate('teacher').populate('course');
+        var quizzes = await Quiz.find({teacher: req.user._id}).populate('teacher').populate('course');
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         res.json({success: true, quizzes: quizzes});
@@ -60,7 +60,7 @@ router.get('/', authenticate.verifyUser, async (req, res, next) => {
 
 router.get('/:course_id',authenticate.verifyUser, async (req, res, next) => {
     if (req.user.role === "student"){
-        var quizzes = Quiz.find({teacher: req.user._id}).populate('teacher').populate('course');
+        var quizzes = await Quiz.find({course: req.params.course_id}).populate('teacher').populate('course');
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         res.json({success: true, quizzes: quizzes});

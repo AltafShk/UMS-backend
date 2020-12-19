@@ -27,18 +27,18 @@ courseRouter.get('/', authenticate.verifyUser, async (req, res, next) => { // { 
         var r = [];
         courses.forEach(c => {
             c.students.forEach(s => {
-                if (req.user._id(s._id)){
+                if (req.user._id.equals(s._id)){
                     r.push(c);
                 }
             })
         })
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-        res.json({success: true, courses});
+        res.json({success: true, courses: r});
     }
 })
 
-courseRouter.post('/addcourse',  (req, res, user) => { // { course_name: 'xyz', teacher_name: 'name' }
+courseRouter.post('/addcourse', (req, res, user) => { // { course_name: 'xyz', teacher_name: 'name' }
     if (!req.body.teacher_name){
         res.statusCode = 400;
         res.setHeader('Content-Type', 'application/json');

@@ -33,22 +33,12 @@ const upload = multer({ storage: storage, fileFilter: imageFileFilter});
 var router = express.Router();
 router.use(bodyParser.json());
 
-router.route('/')
+router.route('/:course_id/:quiz_id')
 .post(authenticate.verifyUser, authenticate.verifyStudent, upload.single('pdfFile'), async (req, res) => {
-    if (req.body.quiz_id){
-        res.statusCode = 400;
-        res.setHeader('Content-Type', 'application/json');
-        res.json({success: false, err: `Cannot find quiz_id in req.body.`});
-    }
-    else if (req.body.course_id){
-        res.statusCode = 400;
-        res.setHeader('Content-Type', 'application/json');
-        res.json({success: false, err: `Cannot find course_id in req.body.`});
-    }
     console.log("abcd");
     console.log(req.file);
     var a = req.file.path.split('public/')[1];
-    Submission.create({student: req.user._id, submitted_file: a, course: req.body.course_id })
+    Submission.create({student: req.user._id, submitted_file: a, course: req.params.course_id, quiz: req.params.quiz_id })
     .then(data => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
