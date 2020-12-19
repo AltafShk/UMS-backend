@@ -10,7 +10,7 @@ var passport = require('passport');
 
 /* GET users listing. */
 
-UserRouter.get('/', authenticate.verifyUser, authenticate.verifyAdmin, async (req, res, next) => {
+UserRouter.get('/', async (req, res, next) => {
   const students = await User.find({role: 'student'});
   const teachers = await User.find({role: 'teacher'});
   res.statusCode = 200;

@@ -27,7 +27,7 @@ courseRouter.get('/', authenticate.verifyUser, async (req, res, next) => { // { 
         var r = [];
         courses.forEach(c => {
             c.students.forEach(s => {
-                if (req.user._id(s._id)){
+                if (req.user._id.equals(s._id)){
                     r.push(c);
                 }
             })

@@ -95,6 +95,7 @@ router.route('/setgrade')
 
 router.route('/')
 .get(authenticate.verifyUser, async (req, res, next) => {
+    console.log(req.user)
     if (req.user.role === "teacher"){
         var s = [];
         const courses = await Course.find({teacher: req.user._id}).populate('');
