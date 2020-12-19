@@ -60,11 +60,8 @@ router.route('/')
 
 router.get('/:course_id',authenticate.verifyUser, async (req, res, next) => {
     if (req.user.role === "student"){
-<<<<<<< HEAD
-        var quizzes = await Quiz.find({teacher: req.user._id}).populate('teacher').populate('course');
-=======
+        console.log(req.params)
         var quizzes = await Quiz.find({course: req.params.course_id}).populate('teacher').populate('course');
->>>>>>> 2bd1deaa08c0065f0a07ce77e654280943cac130
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         res.json({success: true, quizzes: quizzes});
@@ -82,11 +79,12 @@ router.put('/endquiz', authenticate.verifyUser, authenticate.verifyTeacher, asyn
         res.setHeader('Content-Type', 'application/json');
         res.json({success: false, err: `Cannot find course_id in req.body.`});
     }
-    const quiz = Quiz.findOneAndUpdate({_id: req.body.quiz_id}, { $set : {available: false} }, {$new: true}, )
+    const quiz = await Quiz.findOneAndUpdate({_id: req.body.quiz_id}, { $set : {available: false} }, {$new: true}, )
     if (quiz){
+        const quizzessAll = await Quiz.find({"teacher": req.user._id}); 
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-        res.json({success: true, quiz: quiz});
+        res.json({success: true, quiz: quiz, quizzes: quizzessAll});
     }
 })
 
